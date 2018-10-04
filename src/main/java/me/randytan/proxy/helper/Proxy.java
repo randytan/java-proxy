@@ -1,4 +1,4 @@
-package com.detica.netreveal.helper;
+package me.randytan.proxy.helper;
 
 import java.io.File;
 import java.io.FileInputStream;

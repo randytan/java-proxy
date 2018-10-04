@@ -1,4 +1,4 @@
-package com.detica.netreveal.helper;
+package me.randytan.proxy.helper;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -43,6 +43,10 @@ public class RequestHandler implements Runnable {
      */
     private Thread httpsClientToServer;
 
+    /**
+    *  Configuration for domain name pattern that determined as local
+    * */
+    private static String localDomainPattern = "*.randytan.me";
 
     /**
      * Creates a ReuqestHandler object capable of servicing HTTP(S) GET requests
@@ -98,7 +102,7 @@ public class RequestHandler implements Runnable {
 
 
         // Check if request is an internal site
-        if(!urlString.contains("*.sna.pe.netreveal")){
+        if(!urlString.contains(localDomainPattern)){
             sendNonCachedToClient(urlString, true);
         }
 

@@ -1,6 +1,6 @@
-package com.detica.netreveal;
+package me.randytan.proxy;
 
-import com.detica.netreveal.helper.Proxy;
+import me.randytan.proxy.helper.Proxy;
 
 public class Main {
 
