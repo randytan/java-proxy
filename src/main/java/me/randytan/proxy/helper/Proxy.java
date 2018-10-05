@@ -1,4 +1,4 @@
-package com.detica.netreveal.helper;
+package me.randytan.proxy.helper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,9 +66,6 @@ public class Proxy implements Runnable{
      */
     public Proxy(int port) {
 
-        // Unset proxy setting from system variables.
-        Utilities.unsetProxy();
-
         // Load in hash map containing previously cached sites and blocked Sites
         cache = new HashMap<String, File>();
         blockedSites = new HashMap<String, String>();
@@ -113,7 +110,7 @@ public class Proxy implements Runnable{
                 thread.start();
             } catch (SocketException e) {
                 // Socket exception is triggered by management system to shut down the proxy
-                logger.error("Server closed");
+                logger.warn("Server closed");
             } catch (IOException e) {
                 e.printStackTrace();
             }

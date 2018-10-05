@@ -1,9 +1,11 @@
-package com.detica.netreveal.helper;
+package me.randytan.proxy.helper;
 
 import com.google.common.collect.ObjectArrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -46,14 +48,8 @@ public class RequestHandler implements Runnable {
     /**
     *  Configuration for domain and IP address name pattern that determined as local
     * */
-    private static String localDomainPattern = "*.sna.pe.netreveal;engineering*;*.csu.local";
+    private static String localDomainPattern = "*.local.randytan.me;*.dev;*.network";
     private static String localIPAddrPattern = "10.*;172.*";
-
-    /**
-     * Configuration for Proxy IP address and Port
-     * */
-    private static String proxyIPAddress = "10.129.49.21";
-    private static String proxyPortAddrs = "8080";
 
     /**
      * Creates a RequestHandler object capable of servicing HTTP(S) GET requests
@@ -77,6 +73,8 @@ public class RequestHandler implements Runnable {
      * on the request type.
      */
     public void run() {
+
+        Utilities.unsetProxy();
 
         // Get Request from client
         String requestString;
@@ -142,13 +140,11 @@ public class RequestHandler implements Runnable {
      */
     private void handleHTTPRequest(String urlString, boolean localDomain){
         try {
-
             URL remoteURL = new URL(urlString);
             if(localDomain){
                 Utilities.unsetProxy();
             } else {
-                System.setProperty("http.proxyHost",proxyIPAddress);
-                System.setProperty("http.proxyPort",proxyPortAddrs);
+                Utilities.setProxy();
             }
 
             try {
@@ -207,6 +203,7 @@ public class RequestHandler implements Runnable {
      * @param urlString desired file to be transmitted over https
      */
     private void handleHTTPSRequest(String urlString, boolean localDomain){
+
         // Extract the URL and port of remote
         String url = urlString.substring(7);
         String[] pieces = url.split(":");
@@ -216,8 +213,7 @@ public class RequestHandler implements Runnable {
         if(localDomain){
             Utilities.unsetProxy();
         } else {
-            System.setProperty("http.proxyHost",proxyIPAddress);
-            System.setProperty("http.proxyPort",proxyPortAddrs);
+            Utilities.setProxy();
         }
 
         try{
@@ -227,12 +223,21 @@ public class RequestHandler implements Runnable {
                 proxyToClientBr.readLine();
             }
 
+            int fileExtensionIndex = urlString.lastIndexOf(".");
+            String fileExtension = urlString.substring(fileExtensionIndex, urlString.length());
+
             // Get actual IP associated with this URL through DNS
             InetAddress address = InetAddress.getByName(url);
 
             // Open a socket to the remote server
             Socket proxyToServerSocket = new Socket(address, port);
             proxyToServerSocket.setSoTimeout(5000);
+
+            BufferedImage image = null;
+            if((fileExtension.contains(".png")) || fileExtension.contains(".jpg") || fileExtension.contains(".jpeg") || fileExtension.contains(".gif")) {
+                URL remoteURL = new URL(url);
+                image = ImageIO.read(remoteURL);
+            }
 
             // Send Connection established to the client
             String line = "HTTP/1.0 200 Connection established\r\n" +
@@ -241,10 +246,14 @@ public class RequestHandler implements Runnable {
             proxyToClientBw.write(line);
             proxyToClientBw.flush();
 
+            if (image != null){
+                ImageIO.write(image, fileExtension.substring(1), clientSocket.getOutputStream());
+            }
+
             // Client and Remote will both start sending data to proxy at this point
             // Proxy needs to asynchronously read data from each party and send it to the other party
 
-            //Create a Buffered Writer betwen proxy and remote
+            // Create a Buffered Writer between proxy and remote
             BufferedWriter proxyToServerBW = new BufferedWriter(new OutputStreamWriter(proxyToServerSocket.getOutputStream()));
 
             // Create Buffered Reader from proxy and remote
