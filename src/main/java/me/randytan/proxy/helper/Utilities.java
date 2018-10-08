@@ -21,16 +21,6 @@ public class Utilities {
 
     private Utilities(){}
 
-    protected static void unsetProxy(){
-        System.setProperty("http.proxyHost", "");
-        System.setProperty("http.proxyPort", "");
-    }
-
-    protected static void setProxy(){
-        System.setProperty("http.proxyHost", SystemProp.getProxyAddress());
-        System.setProperty("http.proxyPort", SystemProp.getProxyPort());
-    }
-
     public static void loadConfiguration(){
         Properties prop = new Properties();
         InputStream input = null;

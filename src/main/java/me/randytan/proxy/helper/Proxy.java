@@ -3,14 +3,12 @@ package me.randytan.proxy.helper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -22,13 +20,7 @@ import java.util.Scanner;
  * The Proxy class is also responsible for providing the dynamic management of the proxy through the console
  * and is run on a separate thread in order to not interrupt the acceptance of socket connections.
  * This allows the administrator to dynamically block web sites in real time.
- *
- * The Proxy server is also responsible for maintaining cached copies of the any websites that are requested by
- * clients and this includes the HTML markup, images, css and js files associated with each webpage.
- *
- * Upon closing the proxy server, the HashMaps which hold cached items and blocked sites are serialized and
- * written to a file and are loaded back in when the proxy is started once more, meaning that cached and blocked
- * sites are maintained.
+
  *
  */
 public class Proxy implements Runnable{
@@ -37,21 +29,6 @@ public class Proxy implements Runnable{
 
     private ServerSocket serverSocket;
     private volatile boolean running = true;
-
-
-    /**
-     * Data structure for constant order lookup of cache items.
-     * Key: URL of page/image requested.
-     * Value: File in storage associated with this key.
-     */
-    static HashMap<String, File> cache;
-
-    /**
-     * Data structure for constant order lookup of blocked sites.
-     * Key: URL of page/image requested.
-     * Value: URL of page/image requested.
-     */
-    static HashMap<String, String> blockedSites;
 
     /**
      * ArrayList of threads that are currently running and servicing requests.
@@ -66,15 +43,11 @@ public class Proxy implements Runnable{
      */
     public Proxy(int port) {
 
-        // Load in hash map containing previously cached sites and blocked Sites
-        cache = new HashMap<String, File>();
-        blockedSites = new HashMap<String, String>();
-
         // Create array list to hold servicing threads
         servicingThreads = new ArrayList<Thread>();
 
         // Start dynamic manager on a separate thread.
-        new Thread(this).start();    // Starts overriden run() method at bottom
+        new Thread(this).start();    // Starts overridden run() method at bottom
 
         try {
             // Create the Server Socket for the Proxy
