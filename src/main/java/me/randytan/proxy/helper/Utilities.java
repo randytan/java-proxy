@@ -1,8 +1,3 @@
-/*
- * Software Copyright BAE Systems plc 2018. All Rights Reserved.
- * BAE SYSTEMS, DETICA and NETREVEAL are trademarks of BAE Systems
- * plc and may be registered in certain jurisdictions.
- */
 
 package me.randytan.proxy.helper;
 
@@ -20,16 +15,6 @@ public class Utilities {
     static final Logger logger = LogManager.getLogger(Utilities.class);
 
     private Utilities(){}
-
-    protected static void unsetProxy(){
-        System.setProperty("http.proxyHost", "");
-        System.setProperty("http.proxyPort", "");
-    }
-
-    protected static void setProxy(){
-        System.setProperty("http.proxyHost", SystemProp.getProxyAddress());
-        System.setProperty("http.proxyPort", SystemProp.getProxyPort());
-    }
 
     public static void loadConfiguration(){
         Properties prop = new Properties();

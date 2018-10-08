@@ -10,7 +10,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="com.jcg" level="debug" />
+        <Logger name="me.randytan" level="debug" />
         <Root level="info">
             <AppenderRef ref="STDOUT" />
         </Root>
