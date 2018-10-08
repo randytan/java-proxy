@@ -124,10 +124,8 @@ public class Proxy implements Runnable{
 
     /**
      * Creates a management interface which can dynamically update the proxy configurations
-     * 		blocked : Lists currently blocked sites
-     *  	cached	: Lists currently cached sites
      *  	close	: Closes the proxy server
-     *  	*		: Adds * to the list of blocked sites
+     * To force close/exit the application press Ctrl^C.
      */
     public void run() {
         Scanner scanner = new Scanner(System.in);

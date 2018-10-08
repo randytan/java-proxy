@@ -1,8 +1,3 @@
-/*
- * Software Copyright BAE Systems plc 2018. All Rights Reserved.
- * BAE SYSTEMS, DETICA and NETREVEAL are trademarks of BAE Systems
- * plc and may be registered in certain jurisdictions.
- */
 
 package me.randytan.proxy.helper;
 
