@@ -25,7 +25,7 @@ import java.util.Scanner;
  */
 public class Proxy implements Runnable{
 
-    final static Logger logger = LogManager.getLogger(Proxy.class.getName());
+    static final Logger logger = LogManager.getLogger(Proxy.class.getName());
 
     private ServerSocket serverSocket;
     private volatile boolean running = true;
@@ -34,7 +34,7 @@ public class Proxy implements Runnable{
      * ArrayList of threads that are currently running and servicing requests.
      * This list is required in order to join all threads on closing of server
      */
-    static ArrayList<Thread> servicingThreads;
+     ArrayList<Thread> servicingThreads;
 
 
     /**
@@ -44,7 +44,7 @@ public class Proxy implements Runnable{
     public Proxy(int port) {
 
         // Create array list to hold servicing threads
-        servicingThreads = new ArrayList<Thread>();
+        servicingThreads = new ArrayList<>();
 
         // Start dynamic manager on a separate thread.
         new Thread(this).start();    // Starts overridden run() method at bottom
@@ -55,12 +55,11 @@ public class Proxy implements Runnable{
             logger.info("Waiting for client on port " + serverSocket.getLocalPort() + "..");
             running = true;
         } catch (SocketException se) {
-            logger.error("Socket Exception when connecting to client");
-            se.printStackTrace();
+            logger.error("Socket Exception when connecting to client: " + se.getMessage());
         } catch (SocketTimeoutException ste) {
-            logger.error("Timeout occurred while connecting to client");
+            logger.error("Timeout occurred while connecting to client. Full error message: " + ste.getMessage());
         } catch (IOException io) {
-            logger.error("IO exception when connecting to client");
+            logger.error("IO exception when connecting to client - " + io.getLocalizedMessage());
         }
     }
 
@@ -85,7 +84,7 @@ public class Proxy implements Runnable{
                 // Socket exception is triggered by management system to shut down the proxy
                 logger.warn("Server closed");
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
     }
@@ -110,6 +109,7 @@ public class Proxy implements Runnable{
             }
         } catch (InterruptedException e) {
             logger.error(e.getMessage());
+            Thread.currentThread().interrupt();
         }
 
         // Close Server Socket

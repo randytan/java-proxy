@@ -79,7 +79,7 @@ public class CustomProxyRoutePlanner extends DefaultRoutePlanner  {
             nonproxyHost = System.getenv(nonproxyHostKey);
         }
         if (nonproxyHost == null) {
-            return null;
+            return new String[0];
         }
         return nonproxyHost.split("\\|");
     }

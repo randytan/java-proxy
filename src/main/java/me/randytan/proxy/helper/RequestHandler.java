@@ -122,7 +122,7 @@ public class RequestHandler implements Runnable {
                 }
             }
         } catch (IOException ioe){
-            ioe.getMessage();
+            logger.error(ioe.getMessage());
         }
 
     }
