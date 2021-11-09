@@ -7,7 +7,7 @@ import me.randytan.proxy.model.SystemProp;
 public class Main {
 
     public static void main(String[] args) {
-
+        //test
         Utilities.loadConfiguration();
         Proxy proxy = new Proxy(SystemProp.getBindPort());
         proxy.listen();
